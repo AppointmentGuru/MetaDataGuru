@@ -1,5 +1,10 @@
 version: "3"
 services:
+  db:
+    restart: on-failure:10
+    image: postgres:9.5
+    volumes:
+      - "metadataguru-postgres-db-volume:/var/lib/postgresql/data"
   web:
     restart: on-failure:10
     build: .
@@ -9,6 +14,6 @@ services:
       - .:/code
     ports:
       - "8000:8000"
-    env_file:
-      - env.dev
 
+volumes:
+  metadataguru-postgres-db-volume:

@@ -1,4 +1,16 @@
 ---
+- hosts: service_postgres_master
+  vars:
+    - organization: appointmentguru
+    - service: medicalaidguru
+    - entity_name: medicalaid
+    - postgres_db_name: "{{organization}}_{{service}}"
+    - postgres_db_user: "{{organization}}_{{service}}"
+    - postgres_db_password: "{{postgres_passwords[service]}}"
+
+  roles:
+    - { role: postgresdb, tags: ['postgres'] }
+
 - hosts: localhost
   vars:
     organization: appointmentguru

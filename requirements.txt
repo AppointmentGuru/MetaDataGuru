@@ -3,6 +3,7 @@ django-filter==1.0.4
 djangorestframework==3.6.3
 gunicorn==19.7.1
 psycopg2==2.7.1
+Pillow
 
 ipdb
 ipython
