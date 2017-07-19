@@ -1,0 +1,62 @@
+---
+- hosts: localhost
+  vars:
+    organization: appointmentguru
+    service: metadataguru
+    entity_name: metadata
+    dns_tld: "{{canonical_tld}}"
+    dns_subdomains:
+      - subdomain: "{{service}}"
+        ip: "{{swarm_ip}}"
+    kong_api:
+      name: "{{service}}"
+      upstream_url: "http://{{service}}"
+      hosts: "{{service}}.{{canonical_tld}}"
+    kong_plugins:
+    - name: cors
+      config: {}
+    - name: rate-limiting
+      config:
+        config.second: 10
+        config.hour: 10000
+    # status:
+    WebsiteName: "{{entity_name}}"
+    WebsiteURL: "https://{{service}}.{{canonical_tld}}"
+    CheckRate: 300
+    TestTags: ''
+  roles:
+    - role: dns
+      tags: [dns]
+    - role: kongapi
+      tags: [kong]
+    - role: status
+      tags: [status]
+
+- hosts: server_swarm
+  vars:
+    # everything else hangs off these
+    organization: appointmentguru
+    service: metadataguru
+    entity_name: metadata
+
+    # you shouldnt need to edit anything below here:
+    # ----------------------------------------------
+
+    # docker app setup:
+    # see: roles/djangoapp/defaults/main.yml for more:
+    docker_org: "{{organization}}"
+    docker_image: "{{service}}"
+    docker_service: "{{service}}"
+    docker_command: "sh /code/run.sh"
+
+  roles:
+    - role: djangoapp
+      tags: [app, django, deploy]
+
+  post_tasks:
+    - name: Tell slack
+      slack:
+        token: '{{slack_token}}'
+        msg: 'Deployed: {{docker_service}} using image: {{docker_org}}/{{docker_image}}:{{docker_version}}. See: {{service}}.{{canonical_tld}}'
+      delegate_to: localhost
+      when: slack_token is defined
