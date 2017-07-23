@@ -1,7 +1,7 @@
 version: "3"
 services:
   school:
-    image: appointmentguru/school:latest
+    image: appointmentguru/infrastructure:latest
     volumes:
       - ~/.ssh:/root/.ssh # map ssh keys
       - ./production.environment.yml:/code/ansible/group_vars/server_swarm.yml
