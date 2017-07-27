@@ -7,15 +7,15 @@ from django.contrib.postgres.fields import ArrayField
 class LineItem(models.Model):
 
     # the object to which this lineitem is attached
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    object_id = models.CharField(max_length=255, db_index=True, verbose_name='The remote object to which this field belongs')
+    owners = ArrayField(models.CharField(max_length=36), default=[])
+    object_ids = ArrayField(models.CharField(max_length=100), default=[])
 
     fields = ArrayField(models.CharField(max_length=100))
     values = ArrayField(ArrayField(models.CharField(max_length=100)))
 
 class Note(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    object_ids = ArrayField(models.CharField(max_length=100))
+    object_ids = ArrayField(models.CharField(max_length=100), default=[], blank=True, null=True)
 
     title = models.CharField(max_length=50)
     text = models.TextField(blank=True, null=True)
@@ -25,8 +25,11 @@ class Note(models.Model):
 
 class Document(models.Model):
 
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    object_ids = ArrayField(models.CharField(max_length=100))
+    owners = ArrayField(models.CharField(max_length=36), default=[])
+    object_ids = ArrayField(models.CharField(max_length=100), default=[], blank=True, null=True)
+    note = models.ForeignKey(Note, blank=True, null=True)
+
+
     name = models.CharField(max_length=50)
     description = models.TextField(max_length=200, blank=True, null=True)
 
@@ -35,8 +38,10 @@ class Document(models.Model):
     modified_date = models.DateTimeField(auto_now=True, db_index=True)
 
 class ImageDocument(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    object_ids = ArrayField(models.CharField(max_length=100))
+    owners = ArrayField(models.CharField(max_length=36), default=[])
+    object_ids = ArrayField(models.CharField(max_length=100), default=[], blank=True, null=True)
+    note = models.ForeignKey(Note, blank=True, null=True)
+
     name = models.CharField(max_length=50)
 
     file = models.ImageField()

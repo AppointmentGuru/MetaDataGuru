@@ -10,10 +10,14 @@ services:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     #command: newrelic-admin run-program gunicorn appointmentguru.wsgi:application -b :8000 --reload
+    depends_on:
+      - db
     volumes:
       - .:/code
     ports:
       - "8000:8000"
+    env_file:
+      - env.dev
 
 volumes:
   metadataguru-postgres-db-volume:

@@ -5,6 +5,7 @@ services:
     volumes:
       - ~/.ssh:/root/.ssh # map ssh keys
       - ./production.environment.yml:/code/ansible/group_vars/server_swarm.yml
+      - ./pay.yml:/code/ansible/deploy.drf.yml
     command: ansible-playbook /code/ansible/deploy.drf.yml  -i /etc/ansible/inventory/digital_ocean.py -e "organization=appointmentguru service=metadataguru entity_name=metadata"
     environment:
       - ANSIBLE_HOST_KEY_CHECKING=False

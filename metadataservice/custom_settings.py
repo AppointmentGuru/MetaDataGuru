@@ -1,4 +1,5 @@
 import os
+
 ALLOWED_HOSTS = [host.strip() for host in os.environ.get("ALLOWED_HOSTS", '').split(',')]
 
 # aws storage
@@ -24,3 +25,15 @@ DATABASES = {
 db_password = os.environ.get('DATABASE_PASSWORD', False)
 if db_password:
     DATABASES.get('default').update({'PASSWORD': db_password})
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'kong_oauth.drf_authbackends.KongDownstreamAuthHeadersAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination'
+}

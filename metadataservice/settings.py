@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'storages',
     'rest_framework',
 
+    'kong_oauth',
     'api',
     'metadataservice',
 ]
@@ -53,6 +54,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # custom
+    'kong_oauth.middleware.KongUserMiddleware',
 ]
 
 ROOT_URLCONF = 'metadataservice.urls'
