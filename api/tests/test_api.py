@@ -72,7 +72,8 @@ class LineItemCreateTestCase(TestCase):
             ('3', 4),
             ('5', 0),
             ('1,2', 4),
-            ('3,4,5', 4)
+            ('3,4,5', 4),
+            ('3,4,5,6,7,8,9,1000,123,654', 4)
         ]
 
         for args, expected_count in args_expected_count:
