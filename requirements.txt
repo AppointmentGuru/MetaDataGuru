@@ -14,3 +14,4 @@ ipython
 
 coverage
 codacy-coverage
+Faker
