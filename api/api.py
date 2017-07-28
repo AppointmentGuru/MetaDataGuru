@@ -22,7 +22,7 @@ class LineItemViewSet(viewsets.ModelViewSet):
 
     # search_fields = ('name', 'description')
     # ordering_fields = ('name',)
-    # ordering = ('name',)
+    ordering = ('-id',)
 
 
 router = routers.DefaultRouter()

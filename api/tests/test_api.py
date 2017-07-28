@@ -29,14 +29,13 @@ class LineItemCreateTestCase(TestCase):
     def test_create(self):
 
         data = {
-            "id": 1,
             "object_ids": ["apointment:123", "user:456"],
             "fields": ["name", "description", "price"],
             "values": [
                 ["foo", "bar", "1000"],
                 ["baz", "bus", "3000"]
             ],
-            "owner": 1
+            "owners": [1]
         }
 
         headers = {
@@ -60,9 +59,9 @@ class LineItemCreateTestCase(TestCase):
 
             url = reverse('lineitem-list')
             result = self.client.get(url, **get_proxy_headers(user_id))
-            assert len(result.json()) == expected_count
+            assert result.json().get('count') == expected_count
 
-            for li in result.json():
+            for li in result.json().get('results'):
                 assert str(user_id) in li.get('owners')
 
 
@@ -79,7 +78,7 @@ class LineItemCreateTestCase(TestCase):
         for args, expected_count in args_expected_count:
             url = "{}?objects_appointment={}".format(reverse('lineitem-list'), args)
             result = self.client.get(url, **get_proxy_headers(1))
-            actual_count = len(result.json())
+            actual_count = result.json().get('count')
             assert actual_count == expected_count, \
                 'Expected {}. got: {}. Result: {}'.format(expected_count, actual_count, result.json())
 
