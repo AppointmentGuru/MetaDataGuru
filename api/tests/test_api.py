@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from ..models import LineItem
-from .testutils import create_line_item, create_users, get_proxy_headers
+from .testutils import create_line_item, create_user, create_users, create_jsonblob, get_proxy_headers
 
 import json
 
@@ -64,7 +64,6 @@ class LineItemCreateTestCase(TestCase):
             for li in result.json().get('results'):
                 assert str(user_id) in li.get('owners')
 
-
     def test_filter_find_line_items_for_appointments(self):
 
         args_expected_count = [
@@ -83,3 +82,23 @@ class LineItemCreateTestCase(TestCase):
             assert actual_count == expected_count, \
                 'Expected {}. got: {}. Result: {}'.format(expected_count, actual_count, result.json())
 
+class JsonBlobTestCase(TestCase):
+
+    def setUp(self):
+        self.u1 = create_user()
+        self.u2 = create_user()
+
+        create_jsonblob(owners=[self.u1.id])
+        create_jsonblob(owners=[self.u1.id])
+        create_jsonblob(owners=[self.u1.id, self.u2.id])
+        create_jsonblob(owners=[self.u2.id])
+
+        headers = get_proxy_headers(self.u1.id)
+        url = reverse('jsonblob-list')
+        self.response = self.client.get(url, **headers)
+
+    def test_is_ok(self):
+        assert self.response.status_code == 200
+
+    def test_only_get_own_blobs(self):
+        assert self.response.json().get('count') == 3

@@ -1,5 +1,5 @@
 from rest_framework import routers, serializers, viewsets, filters
-from .models import LineItem
+from .models import LineItem, JsonBlob
 from .filters import ObjectOverlapFilterBackend, IsOwnerFilterBackend
 
 class LineItemSerializer(serializers.ModelSerializer):
@@ -24,7 +24,23 @@ class LineItemViewSet(viewsets.ModelViewSet):
     # ordering_fields = ('name',)
     ordering = ('-id',)
 
+class JsonBlobSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = JsonBlob
+        fields = '__all__'
+
+class JsonBlobViewSet(viewsets.ModelViewSet):
+
+    queryset = JsonBlob.objects.all()
+    serializer_class = JsonBlobSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return JsonBlob.objects.filter(
+            owners__contains = [self.request.user.id]
+        )
 
 router = routers.DefaultRouter()
 router.register(r'lineitems', LineItemViewSet)
-
+router.register(r'blobs', JsonBlobViewSet)

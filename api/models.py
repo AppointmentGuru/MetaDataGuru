@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from django.db import models
 from django.conf import settings
-from django.contrib.postgres.fields import ArrayField
+from django.contrib.postgres.fields import ArrayField, JSONField
 
 class LineItem(models.Model):
 
@@ -47,6 +47,12 @@ class ImageDocument(models.Model):
     file = models.ImageField()
     created_date = models.DateTimeField(auto_now_add=True, db_index=True)
     modified_date = models.DateTimeField(auto_now=True, db_index=True)
+
+class JsonBlob(models.Model):
+    owners = ArrayField(models.CharField(max_length=36), default=[], db_index=True, blank=True, null=True)
+    object_ids = ArrayField(models.CharField(max_length=100), default=[], blank=True, null=True)
+    name = models.CharField(max_length=50, blank=True, null=True)
+    data = JSONField(default={})
 
 """
 class MetaDataItem(models.Model):
