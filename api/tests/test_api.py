@@ -10,11 +10,20 @@ from .testutils import create_line_item, create_user, create_users, create_jsonb
 
 import json
 
+HEADERS = {
+    'HTTP_X_ANONYMOUS_CONSUMER': 'false',
+    'HTTP_X_AUTHENTICATED_USERID': '1',
+    'HTTP_X_CONSUMER_USERNAME': 'jimminy-the-cricket'
+}
+
 class NotesTestCase(TestCase):
 
     def setUp(self):
         url = reverse('note-list')
-        self.client.get(url)
+        self.result = self.client.get(url, **HEADERS)
+
+    def test_is_ok(self):
+        assert self.result.status_code == 200, 'Expected 200. got: {}'.format(self.result.content)
 
 
 class LineItemCreateTestCase(TestCase):
