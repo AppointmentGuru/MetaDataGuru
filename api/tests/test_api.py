@@ -10,6 +10,13 @@ from .testutils import create_line_item, create_user, create_users, create_jsonb
 
 import json
 
+class NotesTestCase(TestCase):
+
+    def setUp(self):
+        url = reverse('note-list')
+        self.client.get(url)
+
+
 class LineItemCreateTestCase(TestCase):
 
     def setUp(self):

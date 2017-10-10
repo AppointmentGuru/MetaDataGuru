@@ -1,6 +1,23 @@
 from rest_framework import routers, serializers, viewsets, filters
-from .models import LineItem, JsonBlob
+from .models import LineItem, JsonBlob, Note
 from .filters import ObjectOverlapFilterBackend, IsOwnerFilterBackend
+
+class NoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Note
+        fields = '__all__'
+
+class NotesViewSet(viewsets.ModelViewSet):
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+
+    filter_backends = (
+        filters.SearchFilter,
+        filters.OrderingFilter,
+        # IsOwnerFilterBackend,
+        ObjectOverlapFilterBackend)
+
+    ordering = ('-id',)
 
 class LineItemSerializer(serializers.ModelSerializer):
     '''
@@ -44,3 +61,4 @@ class JsonBlobViewSet(viewsets.ModelViewSet):
 router = routers.DefaultRouter()
 router.register(r'lineitems', LineItemViewSet)
 router.register(r'blobs', JsonBlobViewSet)
+router.register(r'notes', NotesViewSet)

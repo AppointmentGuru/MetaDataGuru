@@ -14,7 +14,7 @@ class LineItem(models.Model):
     values = ArrayField(ArrayField(models.CharField(max_length=100)))
 
 class Note(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    owners = ArrayField(models.CharField(max_length=36), default=[])
     object_ids = ArrayField(models.CharField(max_length=100), default=[], blank=True, null=True)
 
     title = models.CharField(max_length=50)
