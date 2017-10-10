@@ -14,7 +14,7 @@ class NotesViewSet(viewsets.ModelViewSet):
     filter_backends = (
         filters.SearchFilter,
         filters.OrderingFilter,
-        # IsOwnerFilterBackend,
+        IsOwnerFilterBackend,
         ObjectOverlapFilterBackend)
 
     ordering = ('-id',)
